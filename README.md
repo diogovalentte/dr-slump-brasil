@@ -17,6 +17,8 @@ pip install -r requirements.txt
 export DOWNLOAD_FOLDER=/abs/path/to/folder
 # SQLite database to be used to keep track of already downloaded episodes
 export DB_PATH=/abs/path/to/file.db
+# Filter to decide what types of episodes to download. Can be: 80show, 90show, special, movie
+export DOWNLOAD_FILTER=
 ``` 
 5. Execute the script:
 ```sh

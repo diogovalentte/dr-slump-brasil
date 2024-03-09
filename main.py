@@ -5,7 +5,7 @@ from pytfy import NtfyPublisher
 
 from src.db import DB
 from src.mega import download_from_url
-from src.site import get_feed, get_mega_urls
+from src.site import filter_feed, get_feed, get_mega_urls
 
 logging.basicConfig(
     encoding="utf-8",
@@ -34,6 +34,7 @@ def get_configs():
     configs = {
         "download_folder": download_folder,
         "db_path": db_path,
+        "download_filter": os.environ.get("DOWNLOAD_FILTER"),
         "ntfy": {
             "domain": os.environ.get("NTFY_DOMAIN"),
             "topic": os.environ.get("NTFY_TOPIC"),
@@ -55,29 +56,26 @@ def main(configs):
     feed = get_feed()
     logger.info(f"Feed retrieved successfully. Got {len(feed)} entries.")
 
+    feed = filter_feed(feed, configs["download_filter"])
+
     for entry in feed:
         title = entry.title
-
-        # Get only the 80's episodes
-        if "Episódio" in title and "90's" not in title:
-            r = db.select(title)
-            if r is not None:
-                logger.info(f"The entry {title} has already been processed.")
-                continue
-
-            logger.info(f"Processing the entry: {title}")
-            content = entry.summary
-
-            mega_urls = get_mega_urls(content)
-            if not mega_urls:
-                continue
-            for url in mega_urls:
-                download_from_url(url, download_folder)
-
-            db.insert(title)
-            logger.info(f"Entry {title} processed successfully.")
-        else:
+        r = db.select(title)
+        if r is not None:
+            logger.info(f"The entry {title} has already been processed.")
             continue
+
+        logger.info(f"Processing the entry: {title}")
+        content = entry.summary
+
+        mega_urls = get_mega_urls(content)
+        if not mega_urls:
+            continue
+        for url in mega_urls:
+            download_from_url(url, download_folder)
+
+        db.insert(title)
+        logger.info(f"Entry {title} processed successfully.")
 
 
 if __name__ == "__main__":
