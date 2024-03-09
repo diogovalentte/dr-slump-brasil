@@ -94,7 +94,6 @@ def main(configs):
             for url in mega_urls:
                 download_from_content(url, download_folder)
             logger.info(f"Entry {title} processed successfully.")
-            break
         else:
             continue
 
