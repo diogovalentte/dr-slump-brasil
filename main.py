@@ -3,6 +3,7 @@ import os
 
 from pytfy import NtfyPublisher
 
+from src.db import DB
 from src.mega import download_from_url
 from src.site import get_feed, get_mega_urls
 
@@ -28,8 +29,11 @@ def get_configs():
     if not os.path.exists(download_folder) or not os.path.isdir(download_folder):
         raise ValueError("The download_folder path does not exist or is not a folder.")
 
+    db_path = os.environ.get("DB_PATH")
+
     configs = {
         "download_folder": download_folder,
+        "db_path": db_path,
         "ntfy": {
             "domain": os.environ.get("NTFY_DOMAIN"),
             "topic": os.environ.get("NTFY_TOPIC"),
@@ -42,6 +46,10 @@ def get_configs():
 
 def main(configs):
     download_folder = configs["download_folder"]
+    db_path = configs["db_path"]
+
+    db = DB(db_path)
+    db.create_tables()
 
     logger.info("Getting the feed from the RSS feed.")
     feed = get_feed()
@@ -49,8 +57,14 @@ def main(configs):
 
     for entry in feed:
         title = entry.title
+
         # Get only the 80's episodes
         if "Episódio" in title and "90's" not in title:
+            r = db.select(title)
+            if r is not None:
+                logger.info(f"The entry {title} has already been processed.")
+                continue
+
             logger.info(f"Processing the entry: {title}")
             content = entry.summary
 
@@ -59,6 +73,8 @@ def main(configs):
                 continue
             for url in mega_urls:
                 download_from_url(url, download_folder)
+
+            db.insert(title)
             logger.info(f"Entry {title} processed successfully.")
         else:
             continue

@@ -11,9 +11,12 @@ mega-cmd-server
 ```sh
 pip install -r requirements.txt
 ```
-4. Export the environment variable DOWNLOAD_FOLDER specifying where to download the episodes:
+4. Export the environment variables needed:
 ```sh
+# Where to download the episodes 
 export DOWNLOAD_FOLDER=/abs/path/to/folder
+# SQLite database to be used to keep track of already downloaded episodes
+export DB_PATH=/abs/path/to/file.db
 ``` 
 5. Execute the script:
 ```sh
