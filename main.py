@@ -1,12 +1,10 @@
 import logging
 import os
-import re
 
-import feedparser
-from megapy import Mega
 from pytfy import NtfyPublisher
 
-RSS_FEED_URL = "https://drslumpbrasil.blogspot.com/feeds/posts/default"
+from src.mega import download_from_url
+from src.site import get_feed, get_mega_urls
 
 logging.basicConfig(
     encoding="utf-8",
@@ -42,38 +40,6 @@ def get_configs():
     return configs
 
 
-def get_feed():
-    """Get the complete feed from the RSS_FEED_URL and return it as a list of entries."""
-    start_index = 1
-    max_results = 150
-    total_feed = []
-    while True:
-        url = f"{RSS_FEED_URL}?start-index={start_index}&max-results={max_results}"
-        feed = feedparser.parse(url)
-        feed_len = len(feed.entries)
-
-        if feed_len == 0:
-            break
-
-        start_index += feed_len
-        total_feed.extend(feed.entries)
-
-    return total_feed
-
-
-def get_mega_urls(content):
-    """Get the mega URLs from the content and return it as a list."""
-    urls = re.findall(r'https://mega\.nz/[^"]+', content)
-
-    return urls
-
-
-def download_from_content(download_url: str, download_folder: str):
-    """Download the file from the mega_url and save it to the download_folder."""
-    mega = Mega()
-    mega.download_url(download_url, download_folder)
-
-
 def main(configs):
     download_folder = configs["download_folder"]
 
@@ -92,7 +58,7 @@ def main(configs):
             if not mega_urls:
                 continue
             for url in mega_urls:
-                download_from_content(url, download_folder)
+                download_from_url(url, download_folder)
             logger.info(f"Entry {title} processed successfully.")
         else:
             continue
