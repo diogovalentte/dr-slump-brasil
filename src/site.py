@@ -40,6 +40,9 @@ def get_download_urls(content):
             file_id = match.group(1)
             urls.append(f"https://drive.google.com/uc?id={file_id}")
 
+    onedrive_urls = re.findall(r'https:\/\/onedrive\.live\.com\/[^"]+', content)
+    urls.extend(onedrive_urls)
+
     return set(urls)
 
 
