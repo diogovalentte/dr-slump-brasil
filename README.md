@@ -26,7 +26,7 @@ python3 main.py
 ```
 6. You can also enable notifications to a [Ntfy](https://ntfy.sh) topic by exporting the following environment variables. They'll notify when an episode is downloaded or an error occurs in the execution:
 ```sh
-export NTFY_DOMAIN=https://sub.domain.com
+export NTFY_ADDRESS=https://sub.domain.com
 export NTFY_TOPIC=topic_name
 export NTFY_TOKEN=token
 ```

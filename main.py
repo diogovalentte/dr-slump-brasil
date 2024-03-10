@@ -35,7 +35,7 @@ def get_configs():
         "db_path": os.environ.get("DB_PATH"),
         "download_filter": os.environ.get("DOWNLOAD_FILTER"),
         "ntfy": {
-            "domain": os.environ.get("NTFY_DOMAIN"),
+            "address": os.environ.get("NTFY_ADDRESS"),
             "topic": os.environ.get("NTFY_TOPIC"),
             "token": os.environ.get("NTFY_TOKEN"),
         },
@@ -92,7 +92,7 @@ def main(configs):
 if __name__ == "__main__":
     configs = get_configs()
 
-    if configs["ntfy"]["domain"] is None:
+    if configs["ntfy"]["address"] is None:
         ntfy = None
         try:
             main(configs)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
             raise ex
     else:
         ntfy = NtfyPublisher(
-            configs["ntfy"]["domain"],
+            configs["ntfy"]["address"],
             configs["ntfy"]["topic"],
             configs["ntfy"]["token"],
         )
