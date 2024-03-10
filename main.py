@@ -96,7 +96,13 @@ if __name__ == "__main__":
 
     if configs["ntfy"]["domain"] is None:
         ntfy = None
-        main(configs)
+        try:
+            main(configs)
+        except Exception as ex:
+            logger.error(
+                "A error occurred while downloading episodes from Dr. Slump Brasil"
+            )
+            raise ex
     else:
         ntfy = NtfyPublisher(
             configs["ntfy"]["domain"],
@@ -106,6 +112,9 @@ if __name__ == "__main__":
         try:
             main(configs)
         except Exception as ex:
+            logger.error(
+                "A error occurred while downloading episodes from Dr. Slump Brasil"
+            )
             ntfy.post(
                 f"A error occurred while downloading episodes from Dr. Slump Brasil:\n{ex}",
                 "Dr. Slump Brasil download error",
