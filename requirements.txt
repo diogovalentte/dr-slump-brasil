@@ -5,9 +5,9 @@ feedparser==6.0.11
 filelock==3.13.1
 gdown==5.1.0
 idna==3.6
-megapy @ git+ssh://git@github.com/diogovalentte/megapy.git@a3fe00c9bb5d15ed279d68f6a2577743a5da8760
+megapy @ git+https://git@github.com/diogovalentte/megapy.git@a3fe00c9bb5d15ed279d68f6a2577743a5da8760
 PySocks==1.7.1
-pytfy @ git+ssh://git@github.com/diogovalentte/pytfy.git@a26fe2862dbad554ac4d673a105e72d5febf3041
+pytfy @ git+https://git@github.com/diogovalentte/pytfy.git@a26fe2862dbad554ac4d673a105e72d5febf3041
 requests==2.31.0
 sgmllib3k==1.0.0
 soupsieve==2.5

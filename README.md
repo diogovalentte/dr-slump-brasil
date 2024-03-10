@@ -7,7 +7,7 @@ This is a project to download episodes from the [Dr. Slump Brasil site](https://
 ```
 mega-cmd-server
 ```
-3. Install the Python requirements. It'll download some of my own libraries from my Github repositories using SSH with Github, so you need to configure an SSH key with Github, or change the `git+ssh://git@github.com/` to `git+https://git@github.com/` to use HTTPS in the **requirements.txt** file.
+3. Install the Python requirements:
 ```sh
 pip install -r requirements.txt
 ```
