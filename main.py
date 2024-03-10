@@ -83,17 +83,25 @@ def main(configs):
 
         db.insert(title)
         logger.info(f"Entry {title} processed successfully.")
+        if ntfy is not None:
+            ntfy.post(
+                f"Dr. Slump episode {title} downloaded successfully.",
+                "Dr. Slump Brasil download success",
+            )
 
 
 if __name__ == "__main__":
     configs = get_configs()
-    ntfy = NtfyPublisher(
-        configs["ntfy"]["domain"], configs["ntfy"]["topic"], configs["ntfy"]["token"]
-    )
 
     if configs["ntfy"]["domain"] is None:
+        ntfy = None
         main(configs)
     else:
+        ntfy = NtfyPublisher(
+            configs["ntfy"]["domain"],
+            configs["ntfy"]["topic"],
+            configs["ntfy"]["token"],
+        )
         try:
             main(configs)
         except Exception as ex:
