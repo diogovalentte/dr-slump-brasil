@@ -103,7 +103,7 @@ def main(configs):
 if __name__ == "__main__":
     configs = get_configs()
 
-    if configs["ntfy"]["address"] is None:
+    if configs["ntfy"]["address"] is None or configs["ntfy"]["address"] == "":
         ntfy = None
         try:
             main(configs)

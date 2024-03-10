@@ -9,6 +9,15 @@ pip install -r requirements.txt
 ```
 
 # How to run:
+The project uses environment variables to define some configs:
+```
+# Where to download the episodes 
+DOWNLOAD_FOLDER=/abs/path/to/folder
+# SQLite database to be used to keep track of already downloaded episodes
+DB_PATH=/abs/path/to/file.db
+# Filter to decide what types of episodes to download. Can be: 80show, 90show, special, movie
+DOWNLOAD_FILTER=80show
+```
 ## Docker
 1. Build the Docker image:
 ```sh
@@ -16,7 +25,7 @@ docker build -t dr-slump-brasil .
 ```
 2. Run:
 ```sh
-docker run --name dr-slump-brasil dr-slump-brasil
+docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e DOWNLOAD_FOLDER=/downloads -e DOWNLOAD_FILTER=<filter> -e DB_PATH=/data/dr-slump-brasil.db dr-slump-brasil
 ```
 
 ## Manually
@@ -26,12 +35,9 @@ mega-cmd-server
 ```
 2. Export the environment variables needed:
 ```sh
-# Where to download the episodes 
 export DOWNLOAD_FOLDER=/abs/path/to/folder
-# SQLite database to be used to keep track of already downloaded episodes
 export DB_PATH=/abs/path/to/file.db
-# Filter to decide what types of episodes to download. Can be: 80show, 90show, special, movie
-export DOWNLOAD_FILTER=
+export DOWNLOAD_FILTER=movie
 ``` 
 3. (Optional) You can enable notifications to a [Ntfy](https://ntfy.sh) topic by exporting the following environment variables. They'll notify when an episode is downloaded or an error occurs in the execution:
 ```sh
