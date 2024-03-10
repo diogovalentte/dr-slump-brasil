@@ -1,11 +1,12 @@
 import logging
 import os
 
+from megapy.exceptions import NotFoundException as MegaNotFoundException
 from pytfy import NtfyPublisher
 
 from src.db import DB
-from src.mega import download_from_url
-from src.site import filter_feed, get_feed, get_mega_urls
+from src.download import download_from_url
+from src.site import filter_feed, get_download_urls, get_feed
 
 logging.basicConfig(
     encoding="utf-8",
@@ -47,6 +48,7 @@ def get_configs():
 
 def main(configs):
     download_folder = configs["download_folder"]
+    download_filter = configs["download_filter"]
     db_path = configs["db_path"]
 
     db = DB(db_path)
@@ -56,7 +58,7 @@ def main(configs):
     feed = get_feed()
     logger.info(f"Feed retrieved successfully. Got {len(feed)} entries.")
 
-    feed = filter_feed(feed, configs["download_filter"])
+    feed = filter_feed(feed, download_filter)
 
     for entry in feed:
         title = entry.title
@@ -68,11 +70,16 @@ def main(configs):
         logger.info(f"Processing the entry: {title}")
         content = entry.summary
 
-        mega_urls = get_mega_urls(content)
-        if not mega_urls:
-            continue
-        for url in mega_urls:
-            download_from_url(url, download_folder)
+        download_urls = get_download_urls(content)
+        for url in download_urls:
+            try:
+                download_from_url(url, download_folder, title, download_filter)
+            except MegaNotFoundException as ex:
+                logger.warning(
+                    f"Error while downloading {title} from url: {url}:\n{ex}"
+                )
+                if len(download_urls) == 1:
+                    raise ex
 
         db.insert(title)
         logger.info(f"Entry {title} processed successfully.")

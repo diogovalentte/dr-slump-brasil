@@ -1,9 +1,15 @@
+beautifulsoup4==4.12.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
 feedparser==6.0.11
+filelock==3.13.1
+gdown==5.1.0
 idna==3.6
-megapy @ git+ssh://git@github.com/diogovalentte/megapy.git@9c617fa07bfb86b449b9fa134bb2a427dcf1a763
+megapy @ git+ssh://git@github.com/diogovalentte/megapy.git@a3fe00c9bb5d15ed279d68f6a2577743a5da8760
+PySocks==1.7.1
 pytfy @ git+ssh://git@github.com/diogovalentte/pytfy.git@a26fe2862dbad554ac4d673a105e72d5febf3041
 requests==2.31.0
 sgmllib3k==1.0.0
+soupsieve==2.5
+tqdm==4.66.2
 urllib3==2.2.1

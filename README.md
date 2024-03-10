@@ -2,7 +2,7 @@
 This is a project to download episodes from the [Dr. Slump Brasil site](https://drslumpbrasil.blogspot.com) with PT-BR fansub. If you like the episodes, you can donate to the site owner, more about it on the Dr. Slump Brasil site.
 
 # How to run:
-1. Install [MEGAcmd](https://github.com/meganz/MEGAcmd) CLIs, they'll be used because the episodes' downloads are available on [MEGA.nz](https://mega.nz).
+1. Install [MEGAcmd](https://github.com/meganz/MEGAcmd) CLIs, they'll be used because some episodes are available on [MEGA.nz](https://mega.nz).
 2. Start the mega-cmd-server:
 ```
 mega-cmd-server

@@ -24,11 +24,23 @@ def get_feed():
     return total_feed
 
 
-def get_mega_urls(content):
-    """Get the mega URLs from the content and return it as a list."""
-    urls = re.findall(r'https://mega\.nz/[^"]+', content)
+def get_download_urls(content):
+    """Get the download URLs from the content and return it as a list."""
+    urls = []
 
-    return urls
+    content = content.replace("mega.co.nz", "mega.nz")
+    mega_urls = re.findall(r'https://mega\.nz/[^"]+', content)
+    urls.extend(mega_urls)
+
+    gdrive_urls = re.findall(r'https://drive\.google\.com/[^"]+', content)
+    get_id_pattern = r"https://drive.google.com/file/d/([^/]+)/"
+    for url in gdrive_urls:
+        match = re.search(get_id_pattern, url)
+        if match:
+            file_id = match.group(1)
+            urls.append(f"https://drive.google.com/uc?id={file_id}")
+
+    return set(urls)
 
 
 def filter_feed(feed: list, filter: str = ""):
@@ -71,7 +83,7 @@ def is_90_show_episode(title, _):
 
 
 def is_special(title, _):
-    return "Episódio" not in title and "Especial" in title
+    return "Episódio" not in title and ("Especial" in title or "Special" in title)
 
 
 def is_movie(title, content):
@@ -81,3 +93,38 @@ def is_movie(title, content):
         and "Especial" not in title
         and ("Filme" in content or "filme" in content)
     )
+
+
+def get_filename_to_save(title: str, media_type: str):
+    """Get the filename to save the file based on the title.
+
+    Args:
+        title (str): Title of the file.
+        media_type (str): Type of the media. Can be: 80show, 90show, special, movie.
+
+    Returns:
+        (str | None): Filename to save the file. None if the media_type is not supported.
+    """
+    match media_type:
+        case "80show":
+            pattern = r"\b(\d+)\b"
+            match = re.search(pattern, title)
+            if match:
+                number = match.group(1)
+            else:
+                raise ValueError(f"Cannot extract the episode number of title: {title}")
+            return f"Dr. Slump & Arale-chan (1981) - {number.zfill(3)}.mkv"
+        case "90show":
+            pattern = r"Episódio (\d+)"
+            match = re.search(pattern, title)
+            if match:
+                number = match.group(1)
+            else:
+                raise ValueError(f"Cannot extract the episode number of title: {title}")
+            return f"Dr. Slump (1997) - {number.zfill(3)}.mkv"
+        case "special":
+            return f"Special - {title}.mkv"
+        case "movie":
+            return f"Movie - {title}.mkv"
+        case _:
+            return None
