@@ -1,13 +1,6 @@
 # Dr. Slump Brasil Downloader
 This is a project to download episodes from the [Dr. Slump Brasil site](https://drslumpbrasil.blogspot.com) with PT-BR fansub. If you like the episodes, you can donate to the site owner, more about it on the Dr. Slump Brasil site.
 
-# Requirements
-- Install [MEGAcmd](https://github.com/meganz/MEGAcmd) CLIs, they'll be used because some episodes are available on [MEGA.nz](https://mega.nz).
-- Install the Python dependencies:
-```sh
-pip install -r requirements.txt
-```
-
 # How to run:
 The project uses environment variables to define some configs:
 ```
@@ -40,6 +33,12 @@ docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e D
 ```
 
 ## Run manually
+### Requirements
+- Install [MEGAcmd](https://github.com/meganz/MEGAcmd) CLIs, they'll be used because some episodes are available on [MEGA.nz](https://mega.nz).
+- Install the Python dependencies:
+```sh
+pip install -r requirements.txt
+```
 1. Start the mega-cmd-server:
 ```
 mega-cmd-server
@@ -61,6 +60,10 @@ python3 main.py
 ```
 
 # Limitations
+## Download from MEGAnz
+Mega has a bandwidth quota limitation, where you can download a certain amount of GBs until you reach the bandwidth quota limit for your IP address, after this, you need to wait to download again. The project will download the episodes anyway, but when you reach the quota limit, the download will pause and resume when Mega gives you more quota or reset your quota usage (it can take hours!).
+- Most (*if not all*) of the specials, movies, and the 80's show episodes are uploaded to Mega, so this is a huge slowdown for these downloads.
+- Most (*if not all*) of the 90's show files are uploaded to Google Drive or OneDrive, so they don't have this issue.
 ## Download from OneDrive
 Some files are available on OneDrive, but the project won't directly use the OneDrive URL to download the file (I don't know how to do it simply and I spent too much time testing how to). Instead, I accessed each link to get the "real" download URL and created a map variable between the OneDrive URL available on the site and the "real" download URL, **manually**. I did this because currently, only a few episodes are in OneDrive (episodes 62-74 of the 90's show), so it wasn't so much trouble.
 - The map is on the file `src/download.py`, with the variable name `ONEDRIVE_MAP`.
