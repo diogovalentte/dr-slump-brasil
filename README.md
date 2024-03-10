@@ -17,7 +17,7 @@ DOWNLOAD_FOLDER=/abs/path/to/folder
 # SQLite database to be used to keep track of already downloaded episodes
 DB_PATH=/abs/path/to/file.db
 
-# Filter to decide what types of episodes to download. Can be: 80show, 90show, special, movie
+# Filter to decide what types of episodes to download. Can be: 80show, 90show, specials, movies, all
 DOWNLOAD_FILTER=80show
 
 # (Optional) You can enable notifications to a Ntfy (https://ntfy.sh) topic by exporting the following environment variables.

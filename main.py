@@ -6,7 +6,8 @@ from pytfy import NtfyPublisher
 
 from src.db import DB
 from src.download import download_from_url
-from src.site import (filter_feed, get_download_urls, get_entry_index,
+from src.exceptions import InvalidDownloadFilter
+from src.site import (filter_feed, get_download_type, get_download_urls,
                       get_feed, search_repost)
 
 logging.basicConfig(
@@ -31,10 +32,17 @@ def get_configs():
     if not os.path.exists(download_folder) or not os.path.isdir(download_folder):
         raise ValueError("The download_folder path does not exist or is not a folder.")
 
+    download_filter = os.environ.get("DOWNLOAD_FILTER")
+    if download_filter not in ["80show", "90show", "specials", "movies", "all"]:
+        if not download_filter or download_filter == "":
+            download_filter = "all"
+        else:
+            raise InvalidDownloadFilter
+
     configs = {
         "download_folder": download_folder,
         "db_path": os.environ.get("DB_PATH"),
-        "download_filter": os.environ.get("DOWNLOAD_FILTER"),
+        "download_filter": download_filter,
         "ntfy": {
             "address": os.environ.get("NTFY_ADDRESS"),
             "topic": os.environ.get("NTFY_TOPIC"),
@@ -55,36 +63,44 @@ def main(configs):
 
     logger.info("Getting the feed from the RSS feed.")
     feed = get_feed()
-    logger.info(f"Feed retrieved successfully. Got {len(feed)} entries.")
-
     feed = filter_feed(feed, download_filter)
     feed.reverse()
+    logger.info(f"Feed retrieved successfully. Got {len(feed)} entries.")
 
     for index, entry in enumerate(feed):
         title = entry.title
-        r = db.select(title)
-        if r is not None:
+        if db.select(title) is not None:
             logger.info(f"The entry {title} has already been processed.")
             continue
 
         logger.info(f"Processing the entry: {title}")
-        content = entry.summary
+        summary = entry.summary
 
-        download_urls = list(get_download_urls(content))
+        if download_filter == "all":
+            download_type = get_download_type(title, summary)
+            if download_type is None:
+                raise ValueError(
+                    f"The entry's download type could not be determined from the title and summary.\nTitle: {title}\nSummary: {summary}"
+                )
+        else:
+            download_type = download_filter
+
+        download_urls = get_download_urls(summary)
         for url in download_urls:
             try:
-                download_from_url(url, download_folder, title, download_filter)
+                download_from_url(url, download_folder, title, download_type)
             except MegaNotFoundException as ex:
                 logger.error(f"Error while downloading {title} from url: {url}:\n{ex}")
                 download_urls.pop(0)
 
                 if len(download_urls) < 1:
-                    repost_entry = search_repost(title, feed, download_filter)
+                    repost = search_repost(title, feed, download_type)
+                    repost_index = repost[0]
+                    repost_entry = repost[1]
                     if repost_entry is not None:
                         logger.info(
                             f"Could not download {title}, but found repost {repost_entry.title}, will download it instead."
                         )
-                        repost_index = get_entry_index(feed, repost_entry.title)
                         feed.pop(repost_index)
                         feed.insert(index + 1, repost_entry)
                         continue

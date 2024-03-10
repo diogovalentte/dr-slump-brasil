@@ -8,28 +8,16 @@ from src.site import get_filename_to_save
 
 
 def download_from_url(
-    download_url: str, download_folder: str, title: str, media_type: str
+    download_url: str, download_folder: str, title: str, download_type: str
 ):
     if "mega.nz" in download_url:
-        filename = get_filename_to_save(title, media_type)
-        if filename is None:
-            raise ValueError(
-                f"Media type: {media_type} is not supported while getting filename to save."
-            )
+        filename = get_filename_to_save(title, download_type)
         download_mega(download_url, download_folder, filename)
     elif "drive.google.com" in download_url:
-        filename = get_filename_to_save(title, media_type)
-        if filename is None:
-            raise ValueError(
-                f"Media type: {media_type} is not supported while getting filename to save."
-            )
+        filename = get_filename_to_save(title, download_type)
         download_gdrive(download_url, download_folder, filename)
     elif "onedrive.live.com" in download_url:
-        filename = get_filename_to_save(title, media_type)
-        if filename is None:
-            raise ValueError(
-                f"Media type: {media_type} is not supported while getting filename to save."
-            )
+        filename = get_filename_to_save(title, download_type)
         download_onedrive(download_url, download_folder, filename)
     else:
         raise ValueError("The download_url is not supported.")
