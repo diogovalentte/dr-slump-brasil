@@ -30,6 +30,9 @@ docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e D
 
 # (Optional) Run with Ntfy integration:
 docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e DOWNLOAD_FILTER=filter -e NTFY_ADDRESS=https://sub.domain.com -e NTFY_TOPIC=topic_name -e NTFY_TOKEN=token dr-slump-brasil
+
+# (Optional) Run with a Mega account
+docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e DOWNLOAD_FILTER=filter -e MEGA_EMAIL=email -e MEGA_PASSWORD=password dr-slump-brasil
 ```
 
 ## Run manually
