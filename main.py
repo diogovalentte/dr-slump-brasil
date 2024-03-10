@@ -59,6 +59,7 @@ def main(configs):
     logger.info(f"Feed retrieved successfully. Got {len(feed)} entries.")
 
     feed = filter_feed(feed, download_filter)
+    feed.reverse()
 
     for entry in feed:
         title = entry.title
