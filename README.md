@@ -30,3 +30,8 @@ export NTFY_DOMAIN=https://sub.domain.com
 export NTFY_TOPIC=topic_name
 export NTFY_TOKEN=token
 ```
+
+# Limitations
+## Download from OneDrive
+Some files are available on OneDrive, but the project won't use the OneDrive URL to directly download the file (maybe it could, but I don't know how and I spent too much time testing how). Instead, I accessed each link to get the "real" download URL and created a map variable between the OneDrive URL available on the site and the "real" download URL, **manually**. I did this because currently, only a few episodes are in OneDrive (episodes 62-74 of the 90's show), so it wasn't so much trouble.
+- The map is on the file `src/download.py`, with the variable name `ONEDRIVE_MAP`.
