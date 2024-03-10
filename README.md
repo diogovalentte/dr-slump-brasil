@@ -1,17 +1,30 @@
 # Dr. Slump Brasil Downloader
 This is a project to download episodes from the [Dr. Slump Brasil site](https://drslumpbrasil.blogspot.com) with PT-BR fansub. If you like the episodes, you can donate to the site owner, more about it on the Dr. Slump Brasil site.
 
-# How to run:
-1. Install [MEGAcmd](https://github.com/meganz/MEGAcmd) CLIs, they'll be used because some episodes are available on [MEGA.nz](https://mega.nz).
-2. Start the mega-cmd-server:
-```
-mega-cmd-server
-```
-3. Install the Python requirements:
+# Requirements
+- Install [MEGAcmd](https://github.com/meganz/MEGAcmd) CLIs, they'll be used because some episodes are available on [MEGA.nz](https://mega.nz).
+- Install the Python dependencies:
 ```sh
 pip install -r requirements.txt
 ```
-4. Export the environment variables needed:
+
+# How to run:
+## Docker
+1. Build the Docker image:
+```sh
+docker build -t dr-slump-brasil .
+```
+2. Run:
+```sh
+docker run --name dr-slump-brasil dr-slump-brasil
+```
+
+## Manually
+1. Start the mega-cmd-server:
+```
+mega-cmd-server
+```
+2. Export the environment variables needed:
 ```sh
 # Where to download the episodes 
 export DOWNLOAD_FOLDER=/abs/path/to/folder
@@ -20,15 +33,15 @@ export DB_PATH=/abs/path/to/file.db
 # Filter to decide what types of episodes to download. Can be: 80show, 90show, special, movie
 export DOWNLOAD_FILTER=
 ``` 
-5. Execute the script:
-```sh
-python3 main.py
-```
-6. You can also enable notifications to a [Ntfy](https://ntfy.sh) topic by exporting the following environment variables. They'll notify when an episode is downloaded or an error occurs in the execution:
+3. (Optional) You can enable notifications to a [Ntfy](https://ntfy.sh) topic by exporting the following environment variables. They'll notify when an episode is downloaded or an error occurs in the execution:
 ```sh
 export NTFY_ADDRESS=https://sub.domain.com
 export NTFY_TOPIC=topic_name
 export NTFY_TOKEN=token
+```
+4. Execute the script:
+```sh
+python3 main.py
 ```
 
 # Limitations
