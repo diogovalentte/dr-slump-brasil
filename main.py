@@ -30,11 +30,9 @@ def get_configs():
     if not os.path.exists(download_folder) or not os.path.isdir(download_folder):
         raise ValueError("The download_folder path does not exist or is not a folder.")
 
-    db_path = os.environ.get("DB_PATH")
-
     configs = {
         "download_folder": download_folder,
-        "db_path": db_path,
+        "db_path": os.environ.get("DB_PATH"),
         "download_filter": os.environ.get("DOWNLOAD_FILTER"),
         "ntfy": {
             "domain": os.environ.get("NTFY_DOMAIN"),

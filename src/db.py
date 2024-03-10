@@ -6,7 +6,7 @@ class DB:
         self.db_path = db_path
 
     def create_tables(self):
-        conn = sqlite3.connect("lite.db")
+        conn = sqlite3.connect(self.db_path)
         cur = conn.cursor()
         cur.execute("CREATE TABLE IF NOT EXISTS downloaded (name TEXT)")
         conn.commit()
