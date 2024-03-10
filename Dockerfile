@@ -1,7 +1,9 @@
 FROM python:3.10
 
 ENV DOWNLOAD_FOLDER=/downloads \
-    DOWNLOAD_FILTER=\
+    DOWNLOAD_FILTER=all \
+    FILES_UID=1000 \
+    FILES_GID=1000 \
     DB_PATH=/data/dr-slump-brasil.db \
     NTFY_ADDRESS=\
     NTFY_TOPIC=\

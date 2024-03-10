@@ -8,7 +8,7 @@ from src.db import DB
 from src.download import download_from_url
 from src.exceptions import InvalidDownloadFilter
 from src.site import (filter_feed, get_download_type, get_download_urls,
-                      get_feed, search_repost)
+                      get_feed, get_filename_to_save, search_repost)
 
 logging.basicConfig(
     encoding="utf-8",
@@ -39,10 +39,24 @@ def get_configs():
         else:
             raise InvalidDownloadFilter
 
+    files_uid = os.environ.get("FILES_UID")
+    files_gid = os.environ.get("FILES_GID")
+    if files_uid is None or files_gid is None:
+        raise ValueError(
+            "Environment variables FILES_UID and FILES_GID should be defined"
+        )
+    try:
+        files_uid = int(files_uid)
+        files_gid = int(files_gid)
+    except ValueError as ex:
+        raise ex
+
     configs = {
         "download_folder": download_folder,
-        "db_path": os.environ.get("DB_PATH"),
         "download_filter": download_filter,
+        "files_uid": files_uid,
+        "files_gid": files_gid,
+        "db_path": os.environ.get("DB_PATH"),
         "ntfy": {
             "address": os.environ.get("NTFY_ADDRESS"),
             "topic": os.environ.get("NTFY_TOPIC"),
@@ -56,6 +70,8 @@ def get_configs():
 def main(configs):
     download_folder = configs["download_folder"]
     download_filter = configs["download_filter"]
+    files_uid = configs["files_uid"]
+    files_gid = configs["files_gid"]
     db_path = configs["db_path"]
 
     db = DB(db_path)
@@ -88,7 +104,9 @@ def main(configs):
         download_urls = get_download_urls(summary)
         for url in download_urls:
             try:
-                download_from_url(url, download_folder, title, download_type)
+                filename = get_filename_to_save(title, download_type)
+                download_path = os.path.join(download_folder, filename)
+                download_from_url(url, download_path, files_uid, files_gid)
             except MegaNotFoundException as ex:
                 logger.error(f"Error while downloading {title} from url: {url}:\n{ex}")
                 download_urls.pop(0)

@@ -11,13 +11,21 @@ DOWNLOAD_FOLDER=/abs/path/to/folder
 DB_PATH=/abs/path/to/file.db
 
 # Filter to decide what types of episodes to download. Can be: 80show, 90show, specials, movies, all
-DOWNLOAD_FILTER=80show
+DOWNLOAD_FILTER=all
+
+# Set the user ID and group ID of the downloaded files
+FILES_UID=1000
+FILES_GID=1000
 
 # (Optional) You can enable notifications to a Ntfy (https://ntfy.sh) topic by exporting the following environment variables.
 # They'll notify when an episode is downloaded or an error occurs in the execution:
-export NTFY_ADDRESS=https://sub.domain.com
-export NTFY_TOPIC=topic_name
-export NTFY_TOKEN=token
+NTFY_ADDRESS=https://sub.domain.com
+NTFY_TOPIC=topic_name
+NTFY_TOKEN=token
+
+# (Optional) Set the MEGAnz account to use when downloading files
+export MEGA_EMAIL=
+export MEGA_PASSWORD=
 ```
 ## Run using Docker
 1. Build the Docker image:
@@ -26,7 +34,7 @@ docker build -t dr-slump-brasil .
 ```
 2. Run:
 ```sh
-docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e DOWNLOAD_FILTER=filter dr-slump-brasil
+docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e DOWNLOAD_FILTER=filter -e FILES_UID=1000 -e FILES_GID=1000 dr-slump-brasil
 
 # (Optional) Run with Ntfy integration:
 docker run --name dr-slump-brasil -v ./downloads:/downloads -v ./data:/data -e DOWNLOAD_FILTER=filter -e NTFY_ADDRESS=https://sub.domain.com -e NTFY_TOPIC=topic_name -e NTFY_TOKEN=token dr-slump-brasil
@@ -51,11 +59,17 @@ mega-cmd-server
 export DOWNLOAD_FOLDER=/abs/path/to/folder
 export DB_PATH=/abs/path/to/file.db
 export DOWNLOAD_FILTER=filter
+export FILES_UID=1000
+export FILES_GID=1000
 
 # Optional
 export NTFY_ADDRESS=https://sub.domain.com
 export NTFY_TOPIC=topic_name
 export NTFY_TOKEN=token
+
+# Optional
+export MEGA_EMAIL=user@email.com
+export MEGA_PASSWORD=pass
 ```
 3. Execute the script:
 ```sh

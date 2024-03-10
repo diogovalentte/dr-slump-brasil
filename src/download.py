@@ -4,42 +4,37 @@ import gdown
 import requests
 from megapy import Mega
 
-from src.site import get_filename_to_save
+
+def set_file_owner(file_path: str, uid: int, gid: int):
+    os.chown(file_path, uid, gid)
 
 
-def download_from_url(
-    download_url: str, download_folder: str, title: str, download_type: str
-):
+def download_from_url(download_url: str, download_path: str, uid: int, gid: int):
     if "mega.nz" in download_url:
-        filename = get_filename_to_save(title, download_type)
-        download_mega(download_url, download_folder, filename)
+        download_mega(download_url, download_path)
     elif "drive.google.com" in download_url:
-        filename = get_filename_to_save(title, download_type)
-        download_gdrive(download_url, download_folder, filename)
+        download_gdrive(download_url, download_path)
     elif "onedrive.live.com" in download_url:
-        filename = get_filename_to_save(title, download_type)
-        download_onedrive(download_url, download_folder, filename)
+        download_onedrive(download_url, download_path)
     else:
         raise ValueError("The download_url is not supported.")
 
+    set_file_owner(download_path, uid, gid)
 
-def download_mega(download_url: str, download_folder: str, filename: str):
+
+def download_mega(download_url: str, download_path: str):
     """Download the file from the download_url and save it to the download_folder."""
     mega = Mega()
-    file_path = os.path.join(download_folder, filename)
-    mega.download_url(download_url, file_path, ignore_quota_warn=True)
+    mega.download_url(download_url, download_path, ignore_quota_warn=True)
 
 
-def download_gdrive(download_url: str, download_folder: str, filename: str):
+def download_gdrive(download_url: str, download_path: str):
     """Download the file from the download_url and save it to the download_folder."""
-    file_path = os.path.join(download_folder, filename)
-    gdown.download(download_url, file_path)
+    gdown.download(download_url, download_path)
 
 
-def download_onedrive(onedrive_url: str, download_folder: str, filename: str):
+def download_onedrive(onedrive_url: str, download_path: str):
     """Download the file from the download_url and save it to the download_folder."""
-    file_path = os.path.join(download_folder, filename)
-
     onedrive_url = onedrive_url.replace("amp;", "")
 
     download_url = ONEDRIVE_MAP.get(onedrive_url, None)
@@ -49,7 +44,7 @@ def download_onedrive(onedrive_url: str, download_folder: str, filename: str):
         )
     response = requests.get(download_url)
     if response.status_code == 200:
-        with open(file_path, "wb") as f:
+        with open(download_path, "wb") as f:
             f.write(response.content)
 
 
