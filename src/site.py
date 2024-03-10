@@ -131,3 +131,37 @@ def get_filename_to_save(title: str, media_type: str):
             return f"Movie - {title}.mkv"
         case _:
             return None
+
+
+def search_repost(title: str, feed: list, download_filter: str):
+    """Search for a repost of the title in the feed and return it."""
+    repost_search = [entry for entry in feed if "repost" in entry.title]
+    if len(repost_search) > 0:
+        match download_filter:
+            case "80show":
+                return None
+            case "90show":
+                pattern = r"Dr\. Slump \(90's\) Episódio \d+:"
+                result = re.search(pattern, title)
+                if result:
+                    match = result.group()
+                    repost_search = [
+                        entry
+                        for entry in repost_search
+                        if str(entry.title).startswith(match)
+                    ]
+                    return repost_search[-1]
+                return None
+            case "special":
+                return None
+            case "movie":
+                return None
+            case _:
+                return None
+
+
+def get_entry_index(feed: list, title: str):
+    for index, entry in enumerate(feed):
+        if entry.title == title:
+            return index
+    return -1

@@ -6,7 +6,8 @@ from pytfy import NtfyPublisher
 
 from src.db import DB
 from src.download import download_from_url
-from src.site import filter_feed, get_download_urls, get_feed
+from src.site import (filter_feed, get_download_urls, get_entry_index,
+                      get_feed, search_repost)
 
 logging.basicConfig(
     encoding="utf-8",
@@ -59,7 +60,7 @@ def main(configs):
     feed = filter_feed(feed, download_filter)
     feed.reverse()
 
-    for entry in feed:
+    for index, entry in enumerate(feed):
         title = entry.title
         r = db.select(title)
         if r is not None:
@@ -69,15 +70,25 @@ def main(configs):
         logger.info(f"Processing the entry: {title}")
         content = entry.summary
 
-        download_urls = get_download_urls(content)
+        download_urls = list(get_download_urls(content))
         for url in download_urls:
             try:
                 download_from_url(url, download_folder, title, download_filter)
             except MegaNotFoundException as ex:
-                logger.warning(
-                    f"Error while downloading {title} from url: {url}:\n{ex}"
-                )
-                if len(download_urls) == 1:
+                logger.error(f"Error while downloading {title} from url: {url}:\n{ex}")
+                download_urls.pop(0)
+
+                if len(download_urls) < 1:
+                    repost_entry = search_repost(title, feed, download_filter)
+                    if repost_entry is not None:
+                        logger.info(
+                            f"Could not download {title}, but found repost {repost_entry.title}, will download it instead."
+                        )
+                        repost_index = get_entry_index(feed, repost_entry.title)
+                        feed.pop(repost_index)
+                        feed.insert(index + 1, repost_entry)
+                        continue
+
                     raise ex
 
         db.insert(title)
