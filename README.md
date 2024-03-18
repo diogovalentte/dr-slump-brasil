@@ -1,6 +1,8 @@
 # Dr. Slump Brasil Downloader
 This is a project to download episodes from the [Dr. Slump Brasil site](https://drslumpbrasil.blogspot.com) with PT-BR fansub. If you like the episodes, you can donate to the site owner, more about it on the Dr. Slump Brasil site.
 
+The script will get all entries (posts) from the site, download them, rename, and change the files' ownership (user and group). It also uses a SQLite database to keep track of already downloaded entries, so it can skip them the next time the script runs. Because of that, you can create a [Cron](https://en.wikipedia.org/wiki/Cron) job to execute the project daily and download new entries from the site as they're released.
+
 # How to run:
 The project uses environment variables to define some configs:
 ```
