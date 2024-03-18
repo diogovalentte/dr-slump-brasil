@@ -7,8 +7,14 @@ from pytfy import NtfyPublisher
 from src.db import DB
 from src.download import download_from_url
 from src.exceptions import InvalidDownloadFilter
-from src.site import (filter_feed, get_download_type, get_download_urls,
-                      get_feed, get_filename_to_save, search_repost)
+from src.site import (
+    filter_feed,
+    get_download_type,
+    get_download_urls,
+    get_feed,
+    get_filename_to_save,
+    search_repost,
+)
 
 logging.basicConfig(
     encoding="utf-8",
@@ -102,8 +108,12 @@ def main(configs):
             download_type = download_filter
 
         download_urls = get_download_urls(summary)
+        is_double_episode = "Episódios 29 e 30" in title
+        double_episode_names = ["Episódio 29", "Episódio 30"]
         for url in download_urls:
             try:
+                if is_double_episode:
+                    title = double_episode_names.pop(0)
                 filename = get_filename_to_save(title, download_type)
                 download_path = os.path.join(download_folder, filename)
                 download_from_url(url, download_path, files_uid, files_gid)
