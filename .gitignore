@@ -1,3 +1,4 @@
 .venv
+.env.test
 downloads/
 __pycache__
