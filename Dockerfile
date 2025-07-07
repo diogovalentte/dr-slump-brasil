@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10-alpine
 
 ENV DOWNLOAD_FOLDER=/downloads \
     DOWNLOAD_FILTER=all \
