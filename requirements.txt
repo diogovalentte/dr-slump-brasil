@@ -7,9 +7,9 @@ gdown==5.1.0
 idna==3.6
 megapy @ git+https://github.com/diogovalentte/megapy.git@3931fbaa8783c75873732ae0077b39a556da2e13
 PySocks==1.7.1
-pytfy @ git+https://git@github.com/diogovalentte/pytfy.git@a26fe2862dbad554ac4d673a105e72d5febf3041
-requests==2.31.0
+pytfy @ git+https://github.com/diogovalentte/pytfy.git@25f53e2ede88503748ef2290613f6c71c529a95c
+requests==2.32.4
 sgmllib3k==1.0.0
 soupsieve==2.5
 tqdm==4.66.2
-urllib3==2.2.1
+urllib3==2.5.0
